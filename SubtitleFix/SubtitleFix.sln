@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32802.440
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SubtitleFix", "SubtitleFix.vcxproj", "{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Debug|x64.ActiveCfg = Debug|x64
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Debug|x64.Build.0 = Debug|x64
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Debug|x86.ActiveCfg = Debug|Win32
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Debug|x86.Build.0 = Debug|Win32
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Release|x64.ActiveCfg = Release|x64
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Release|x64.Build.0 = Release|x64
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Release|x86.ActiveCfg = Release|Win32
+		{FBEB5CD6-1B9C-4D81-8ED7-401704E9348E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B66BBA39-B9C2-4772-ABA5-8FA39CAFB03D}
+	EndGlobalSection
+EndGlobal
