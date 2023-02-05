@@ -80,6 +80,7 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
             size_t offset_2 = psd->content.find(']', offset);
             if (offset_2 != string::npos) {
                 //we ignore "[xxxx]"
+                cout << "*****remove: " << psd->content << endl;
                 psd->content.replace(offset, offset_2 - offset + 1, "");
             }
         }
@@ -105,6 +106,7 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
                 last_sd->merged = true;
 
                 psd->merged = true;
+                cout << "*****merge: " << psd->content << endl;
             }
         }
         //blank line
@@ -128,8 +130,10 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
         // 00:46:54,400 --> 00:48:43,290
         // This week's show was produced by Parth Shah and edited by Tara Boyle and Rain
         //
-        if (second_tm > first_tm + 60000)
+        if (second_tm > first_tm + 60000) {
             psd->skip = true;
+            cout << "*****remove: " << psd->time << endl;
+        }
 
         last_sd = psd;
         psd++;
