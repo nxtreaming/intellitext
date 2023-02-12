@@ -126,11 +126,11 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
             psd->skip = true;
         
         // 
-        // fix huge time span， we use 1 min as threshold
+        // fix huge time span， we use 20 as threshold
         // 00:46:54,400 --> 00:48:43,290
         // This week's show was produced by Parth Shah and edited by Tara Boyle and Rain
         //
-        if (second_tm > first_tm + 60000) {
+        if (second_tm > first_tm + 20000) {
             psd->skip = true;
             cout << "*****remove: " << psd->time << endl;
         }
