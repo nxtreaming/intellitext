@@ -6,7 +6,7 @@
 #include <string>
 
 #define SUBTITLE_BLOCK_NUM (1024)
-#define MAX_LINE_LEN (78)
+#define MAX_LINE_LEN (68)
 
 using namespace std;
 
@@ -35,7 +35,6 @@ static int calc_timestamp(string& time)
     offset++;
     offset2 = time.find(' ', offset);
     string msec = time.substr(offset, offset2 - offset);
-
 
     int time_int = atoi(hour.c_str()) * 3600 + atoi(min.c_str()) * 60 + atoi(sec.c_str());
     
@@ -76,23 +75,42 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
 
         //remove all "[xxxx]"
         size_t offset = psd->content.find('[');
+        size_t offset_2;
         if (offset != string::npos) {
-            size_t offset_2 = psd->content.find(']', offset);
+            offset_2 = psd->content.find(']', offset);
             if (offset_2 != string::npos) {
                 //we ignore "[xxxx]"
                 cout << "*****remove: " << psd->content << endl;
                 psd->content.replace(offset, offset_2 - offset + 1, "");
             }
         }
+
+        // remove:
+        //  00:00:03,080 --> 00:00:05,660
+        //  (upbeat music)
+        offset = psd->content.find('(');
+        if (offset != string::npos) {
+            offset_2 = psd->content.find(')', offset);
+            if (offset_2 != string::npos) {
+                cout << "*****remove: " << psd->content << endl;
+                psd->content.replace(offset, offset_2 - offset + 1, "");
+            }
+        }
+
         // 
         //remove the head whitespace (whisper.cpp's bug)
         if (psd->content != "" && psd->content[0] == ' ')
             psd->content.erase(0, 1);
         // merge two continuous lines
         if (last_sd && !last_sd->merged) {
-            size_t twoline_len = last_sd->content.length() + psd->content.length();
+            size_t last_len = last_sd->content.length() + psd->content.length();
+            size_t current_len = psd->content.length();
+            size_t twoline_len = last_len + current_len;
+
+            if (last_len > 0)
+                twoline_len += 1;
             // should match the max line length in our whisper.cpp settings
-            if (twoline_len + 1 < max_line_len) {
+            if (current_len > 0 && twoline_len < max_line_len) {
                 size_t last_size = last_sd->time.find_last_of(' ');
                 size_t cur_size = psd->time.find_last_of(' ');
                 string sub_time = psd->time.substr(cur_size, -1);
@@ -101,9 +119,13 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
                 last_sd->time += ' ';
                 last_sd->time += sub_time;
 
-                last_sd->content += " ";
+                if (last_len > 0)
+                    last_sd->content += " ";
                 last_sd->content += psd->content;
                 last_sd->merged = true;
+
+                // we must keep last line in merge mode
+                last_sd->skip = false;
 
                 psd->merged = true;
                 cout << "*****merge: " << psd->content << endl;
