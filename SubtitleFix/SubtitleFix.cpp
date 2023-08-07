@@ -37,7 +37,7 @@ static int calc_timestamp(string& time)
     string msec = time.substr(offset, offset2 - offset);
 
     int time_int = atoi(hour.c_str()) * 3600 + atoi(min.c_str()) * 60 + atoi(sec.c_str());
-    
+
     time_int *= 1000;
     time_int += atoi(msec.c_str());
 
@@ -97,7 +97,7 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
             }
         }
 
-        // 
+        //
         //remove the head whitespace (whisper.cpp's bug)
         if (psd->content != "" && psd->content[0] == ' ')
             psd->content.erase(0, 1);
@@ -106,6 +106,17 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
             size_t last_len = last_sd->content.length();
             size_t current_len = psd->content.length();
             size_t twoline_len = last_len + current_len + 1;
+
+            //
+            // We do not merge the following two lines
+            //
+            //1663
+            //    01:06 : 08, 820 -- > 01:06 : 09, 320
+            //    [INAUDIBLE]
+            //
+            //1664
+            //   01:06 : 09, 320 -- > 01:06 : 14, 680
+            //    Good question.
 
             // should match the max line length in our whisper.cpp settings
             if (last_len > 0 && current_len > 0 && twoline_len < max_line_len) {
@@ -143,8 +154,8 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
 
         if (second_tm <= first_tm)
             psd->skip = true;
-        
-        // 
+
+        //
         // fix huge time span， we use 20 as threshold
         // 00:46:54,400 --> 00:48:43,290
         // This week's show was produced by Parth Shah and edited by Tara Boyle and Rain
@@ -198,7 +209,7 @@ int main(int argc, char *argv[])
     ifstream ifin;
     ofstream ofout;
     string last_content;
-    
+
     subdata *sda = new subdata[SUBTITLE_BLOCK_NUM];
     if (!sda) {
         cout << "Memory is not enough!\n";
@@ -228,7 +239,7 @@ int main(int argc, char *argv[])
 
         int block_num = read_subdata(ifin, SUBTITLE_BLOCK_NUM, sda, MAX_LINE_LEN);
         shrink_subdata(sda, block_num, last_content);
-        
+
         int k = 0;
         subdata* psd = sda;
         while (k < block_num) {
