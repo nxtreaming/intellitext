@@ -103,14 +103,12 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
             psd->content.erase(0, 1);
         // merge two continuous lines
         if (last_sd && !last_sd->merged) {
-            size_t last_len = last_sd->content.length() + psd->content.length();
+            size_t last_len = last_sd->content.length();
             size_t current_len = psd->content.length();
-            size_t twoline_len = last_len + current_len;
+            size_t twoline_len = last_len + current_len + 1;
 
-            if (last_len > 0)
-                twoline_len += 1;
             // should match the max line length in our whisper.cpp settings
-            if (current_len > 0 && twoline_len < max_line_len) {
+            if (last_len > 0 && current_len > 0 && twoline_len < max_line_len) {
                 size_t last_size = last_sd->time.find_last_of(' ');
                 size_t cur_size = psd->time.find_last_of(' ');
                 string sub_time = psd->time.substr(cur_size, -1);
@@ -119,8 +117,7 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
                 last_sd->time += ' ';
                 last_sd->time += sub_time;
 
-                if (last_len > 0)
-                    last_sd->content += " ";
+                last_sd->content += " ";
                 last_sd->content += psd->content;
                 last_sd->merged = true;
 
