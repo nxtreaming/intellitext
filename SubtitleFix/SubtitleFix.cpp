@@ -76,7 +76,8 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
         //remove all "[xxxx]"
         size_t offset = psd->content.find('[');
         size_t offset_2;
-        if (offset != string::npos) {
+        // we only remove the " [xxxxx]" which is located in the head of line
+        if (offset == 1) {
             offset_2 = psd->content.find(']', offset);
             if (offset_2 != string::npos) {
                 //we ignore "[xxxx]"
@@ -89,7 +90,7 @@ static int read_subdata(ifstream &ifin, int block_num, subdata *psd, size_t max_
         //  00:00:03,080 --> 00:00:05,660
         //  (upbeat music)
         offset = psd->content.find('(');
-        if (offset != string::npos) {
+        if (offset == 1) {
             offset_2 = psd->content.find(')', offset);
             if (offset_2 != string::npos) {
                 cout << "*****remove: " << psd->content << endl;
